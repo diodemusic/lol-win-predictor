@@ -9,7 +9,7 @@ class EnvVarNotFound(Exception):
         return "Enviroment variable not found."
 
 
-class _keys(Enum):
+class Secret(Enum):
     # discord_token = "DISCORD_TOKEN"
     riot_api_key = "RIOT_API_KEY"
 
@@ -18,8 +18,8 @@ class Config:
     def __init__(self):
         load_dotenv()
 
-    def _get_secret(self, secret):
-        SECRET = os.getenv(secret)
+    def _get_secret(self, secret: Secret):
+        SECRET = os.getenv(secret.value)
 
         if not SECRET:
             raise EnvVarNotFound
@@ -36,7 +36,7 @@ class Config:
     #         exit(1)
 
     def get_riot_api_key(self):
-        secret = _keys.riot_api_key.value
+        secret = Secret.riot_api_key
 
         try:
             return self._get_secret(secret)
