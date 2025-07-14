@@ -43,7 +43,3 @@ class Config:
         except EnvVarNotFound as e:
             print(f"Error getting {secret}: {e}")
             exit(1)
-
-
-config = Config()
-print(config.get_riot_api_key())
