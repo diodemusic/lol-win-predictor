@@ -15,12 +15,11 @@ class Region(Enum):
 
 
 class Riot:
-    def _construct_url(self, endpoint: str, region: Region = None) -> str:  # type: ignore
-        # we are using no region argument to signal that we are using a continent based enpoint
-        if region:
-            return f"https://{region}.api.riotgames.com/riot/{endpoint}"
-        else:
-            return f"https://europe.api.riotgames.com/riot/{endpoint}"
+    def _construct_continent_url(self, endpoint: str) -> str:
+        return f"https://europe.api.riotgames.com/riot/{endpoint}"
+
+    def _construct_region_url(self, endpoint: str, region: Region) -> str:
+        return f"https://{region}.api.riotgames.com/riot/{endpoint}"
 
     def _call_url(self, url: str) -> Any:
         params = {"api_key": RIOT_API_KEY}
@@ -30,7 +29,7 @@ class Riot:
             return r.json()
 
     def get_puuid(self, game_name: str, tag_line: str) -> str:
-        url = self._construct_url(
+        url = self._construct_continent_url(
             endpoint=f"account/v1/accounts/by-riot-id/{game_name}/{tag_line}",
         )
 
