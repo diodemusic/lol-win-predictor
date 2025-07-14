@@ -4,6 +4,7 @@ from typing import Any
 import requests
 from urllib.parse import urlencode
 from enum import Enum
+import time
 
 cfg = Config()
 RIOT_API_KEY = cfg.get_riot_api_key()
@@ -11,6 +12,14 @@ RIOT_API_KEY = cfg.get_riot_api_key()
 
 class Continent(Enum):
     americas = "americas"
+
+
+class QueueId(Enum):
+    solo_duo = 420
+
+
+class QueueType(Enum):
+    ranked = "ranked"
 
 
 class Riot:
@@ -22,6 +31,8 @@ class Riot:
     def _call_url(self, url: str) -> Any:
         params = {"api_key": RIOT_API_KEY}
         r = requests.get(url, params=urlencode(params))
+
+        time.sleep(1.21)
 
         if r.status_code == 200:
             return r.json()
@@ -36,9 +47,16 @@ class Riot:
 
         return puuid
 
-    def get_match_ids(self, continent: Continent, puuid: str) -> list[str]:
+    def get_match_ids(
+        self,
+        continent: Continent,
+        puuid: str,
+        queue_id: QueueId = QueueId.solo_duo,
+        queue_type: QueueType = QueueType.ranked,
+        count: int = 100,
+    ) -> list[str]:
         url = self._construct_url(
-            endpoint=f"lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count=100",
+            endpoint=f"lol/match/v5/matches/by-puuid/{puuid}/ids?queue={queue_id.value}&type={queue_type.value}&start=0&count={count}",
             continent=continent,
         )
 
