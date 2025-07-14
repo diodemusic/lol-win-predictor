@@ -45,3 +45,12 @@ class Riot:
         match_ids = self._call_url(url)
 
         return match_ids
+
+    def get_match(self, continent: Continent, match_id: str) -> Any:
+        url = self._construct_url(
+            endpoint=f"lol/match/v5/matches/{match_id}", continent=continent
+        )
+
+        match = self._call_url(url)
+
+        return match
